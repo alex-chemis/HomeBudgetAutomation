@@ -12,8 +12,8 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HomeBudgetAutomation.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20231125012154_InitialCreate")]
-    partial class InitialCreate
+    [Migration("20231126194513_CreateTables")]
+    partial class CreateTables
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -239,6 +239,7 @@ namespace HomeBudgetAutomation.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasMaxLength(50)
                         .HasColumnType("character varying(50)")
                         .HasColumnName("name");
@@ -257,21 +258,21 @@ namespace HomeBudgetAutomation.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<decimal?>("Amount")
+                    b.Property<decimal>("Amount")
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)")
                         .HasColumnName("amount");
 
-                    b.Property<DateTime?>("CreateDate")
+                    b.Property<DateTime>("CreateDate")
                         .HasColumnType("timestamp(3) without time zone")
                         .HasColumnName("create_date");
 
-                    b.Property<decimal?>("Credit")
+                    b.Property<decimal>("Credit")
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)")
                         .HasColumnName("credit");
 
-                    b.Property<decimal?>("Debit")
+                    b.Property<decimal>("Debit")
                         .HasPrecision(18, 2)
                         .HasColumnType("numeric(18,2)")
                         .HasColumnName("debit");
@@ -462,7 +463,6 @@ namespace HomeBudgetAutomation.Migrations
                     b.HasOne("HomeBudgetAutomation.Models.Article", "Article")
                         .WithMany("Operations")
                         .HasForeignKey("ArticleId")
-                        .OnDelete(DeleteBehavior.Cascade)
                         .HasConstraintName("fk_operations_articles");
 
                     b.HasOne("HomeBudgetAutomation.Models.Balance", "Balance")

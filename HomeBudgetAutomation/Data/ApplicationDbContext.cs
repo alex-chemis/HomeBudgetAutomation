@@ -8,15 +8,15 @@ namespace HomeBudgetAutomation.Data
 {
     public partial class ApplicationDbContext : ApiAuthorizationDbContext<ApplicationUser>
     {
+        public virtual DbSet<Article> Articles { get; set; } = null!;
+        public virtual DbSet<Balance> Balances { get; set; } = null!;
+        public virtual DbSet<Operation> Operations { get; set; } = null!;
+
         public ApplicationDbContext(DbContextOptions options, IOptions<OperationalStoreOptions> operationalStoreOptions)
             : base(options, operationalStoreOptions)
         {
 
         }
-
-        public virtual DbSet<Article> Articles { get; set; } = null!;
-        public virtual DbSet<Balance> Balances { get; set; } = null!;
-        public virtual DbSet<Operation> Operations { get; set; } = null!;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -81,7 +81,6 @@ namespace HomeBudgetAutomation.Data
                 entity.HasOne(d => d.Article)
                     .WithMany(p => p.Operations)
                     .HasForeignKey(d => d.ArticleId)
-                    .OnDelete(DeleteBehavior.Cascade)
                     .HasConstraintName("fk_operations_articles");
 
                 entity.HasOne(d => d.Balance)

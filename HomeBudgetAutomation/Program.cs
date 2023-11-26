@@ -54,6 +54,4 @@ app.MapRazorPages();
 
 app.MapFallbackToFile("index.html"); ;
 
-app.MapArticleEndpoints();
-
 app.Run();

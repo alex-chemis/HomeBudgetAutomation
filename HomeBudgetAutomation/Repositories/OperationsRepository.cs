@@ -17,34 +17,44 @@ namespace HomeBudgetAutomation.Repositories
 
         public bool Create(Operation operation)
         {
-            var result = _context.Database.ExecuteSqlRaw("INSERT INTO operations VALUES (default, @article_id, @debit, @credit, @create_date, @balance_id})",
-                new NpgsqlParameter("@article_id", NpgsqlTypes.NpgsqlDbType.Integer) { Value = operation.ArticleId },
-                new NpgsqlParameter("@debit", NpgsqlTypes.NpgsqlDbType.Numeric) { Value = operation.Debit},
-                new NpgsqlParameter("@credit", NpgsqlTypes.NpgsqlDbType.Numeric) { Value = operation.Credit },
-                new NpgsqlParameter("@create_date", NpgsqlTypes.NpgsqlDbType.Timestamp) { Value = operation.CreateDate },
-                new NpgsqlParameter("@balance_id", NpgsqlTypes.NpgsqlDbType.Integer) { Value = operation.BalanceId });
+            var articleId = new NpgsqlParameter("@article_id", operation.ArticleId);
+            var debit = new NpgsqlParameter("@debit", operation.Debit);
+            var credit = new NpgsqlParameter("@credit", operation.Credit);
+            var createDate = new NpgsqlParameter("@create_date", operation.CreateDate);
+            var balanceId = new NpgsqlParameter("@balance_id", DBNull.Value);
+
+            var result = _context.Database.ExecuteSqlRaw("INSERT INTO operations VALUES (default, @article_id, @debit, @credit, @create_date, @balance_id)",
+                articleId, debit, credit, createDate, balanceId);
 
             return Check(result);
         }
 
         public bool Delete(int id)
         {
-            throw new NotImplementedException();
+            return Check(_context.Database.ExecuteSqlInterpolated($"DELETE FROM operations WHERE id = {id}"));
         }
 
         public Operation Get(int id)
         {
-            throw new NotImplementedException();
+            return _context.Operations.FromSqlInterpolated($"SELECT * FROM operations WHERE id = {id}").ToList().First();
         }
 
         public ICollection<Operation> GetAll()
         {
-            throw new NotImplementedException();
+            return _context.Operations.FromSqlInterpolated($"SELECT * FROM operations").ToList();
         }
 
         public bool Update(Operation operation)
         {
-            throw new NotImplementedException();
+            var articleId = new NpgsqlParameter("@article_id", operation.ArticleId);
+            var debit = new NpgsqlParameter("@debit", operation.Debit);
+            var credit = new NpgsqlParameter("@credit", operation.Credit);
+            var createDate = new NpgsqlParameter("@create_date", operation.CreateDate);
+
+            var result = _context.Database.ExecuteSqlRaw($"UPDATE operations SET debit=@debit credit=@credit create_date=@create_date WHERE id=@article_id",
+                    articleId, debit, credit, createDate);
+            
+            return Check(result);
         }
 
         private bool Check(int executedRows)

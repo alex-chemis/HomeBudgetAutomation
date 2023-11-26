@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace HomeBudgetAutomation.Models
 {
-    public class Operation
+    public partial class Operation
     {
         public int Id { get; set; }
         public int? ArticleId { get; set; }

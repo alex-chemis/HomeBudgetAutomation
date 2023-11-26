@@ -3,6 +3,7 @@ using System;
 using HomeBudgetAutomation.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HomeBudgetAutomation.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231126193540_InitialCreate")]
+    partial class InitialCreate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -227,99 +229,6 @@ namespace HomeBudgetAutomation.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("HomeBudgetAutomation.Models.Article", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<string>("Name")
-                        .IsRequired()
-                        .HasMaxLength(50)
-                        .HasColumnType("character varying(50)")
-                        .HasColumnName("name");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("articles", (string)null);
-                });
-
-            modelBuilder.Entity("HomeBudgetAutomation.Models.Balance", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<decimal>("Amount")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)")
-                        .HasColumnName("amount");
-
-                    b.Property<DateTime>("CreateDate")
-                        .HasColumnType("timestamp(3) without time zone")
-                        .HasColumnName("create_date");
-
-                    b.Property<decimal>("Credit")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)")
-                        .HasColumnName("credit");
-
-                    b.Property<decimal>("Debit")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)")
-                        .HasColumnName("debit");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("balance", (string)null);
-                });
-
-            modelBuilder.Entity("HomeBudgetAutomation.Models.Operation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("integer")
-                        .HasColumnName("id");
-
-                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
-
-                    b.Property<int?>("ArticleId")
-                        .HasColumnType("integer")
-                        .HasColumnName("article_id");
-
-                    b.Property<int?>("BalanceId")
-                        .HasColumnType("integer")
-                        .HasColumnName("balance_id");
-
-                    b.Property<DateTime?>("CreateDate")
-                        .HasColumnType("timestamp(3) without time zone")
-                        .HasColumnName("create_date");
-
-                    b.Property<decimal?>("Credit")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)")
-                        .HasColumnName("credit");
-
-                    b.Property<decimal?>("Debit")
-                        .HasPrecision(18, 2)
-                        .HasColumnType("numeric(18,2)")
-                        .HasColumnName("debit");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ArticleId");
-
-                    b.HasIndex("BalanceId");
-
-                    b.ToTable("operations", (string)null);
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -456,24 +365,6 @@ namespace HomeBudgetAutomation.Migrations
                     b.ToTable("AspNetUserTokens", (string)null);
                 });
 
-            modelBuilder.Entity("HomeBudgetAutomation.Models.Operation", b =>
-                {
-                    b.HasOne("HomeBudgetAutomation.Models.Article", "Article")
-                        .WithMany("Operations")
-                        .HasForeignKey("ArticleId")
-                        .HasConstraintName("fk_operations_articles");
-
-                    b.HasOne("HomeBudgetAutomation.Models.Balance", "Balance")
-                        .WithMany("Operations")
-                        .HasForeignKey("BalanceId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .HasConstraintName("fk_operations_balance");
-
-                    b.Navigation("Article");
-
-                    b.Navigation("Balance");
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -523,16 +414,6 @@ namespace HomeBudgetAutomation.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-                });
-
-            modelBuilder.Entity("HomeBudgetAutomation.Models.Article", b =>
-                {
-                    b.Navigation("Operations");
-                });
-
-            modelBuilder.Entity("HomeBudgetAutomation.Models.Balance", b =>
-                {
-                    b.Navigation("Operations");
                 });
 #pragma warning restore 612, 618
         }
