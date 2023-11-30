@@ -26,7 +26,13 @@ namespace HomeBudgetAutomation.Repositories
             var result = _context.Database.ExecuteSqlRaw("INSERT INTO operations VALUES (default, @article_id, @debit, @credit, @create_date, @balance_id)",
                 articleId, debit, credit, createDate, balanceId);
 
-            return Check(result);
+            if (Check(result))
+            {
+                operation.Id = _context.Operations.Last().Id;
+                return true;
+            }
+
+            return false;
         }
 
         public bool Delete(int id)
@@ -51,7 +57,7 @@ namespace HomeBudgetAutomation.Repositories
             var credit = new NpgsqlParameter("@credit", operation.Credit);
             var createDate = new NpgsqlParameter("@create_date", operation.CreateDate);
 
-            var result = _context.Database.ExecuteSqlRaw($"UPDATE operations SET debit=@debit credit=@credit create_date=@create_date WHERE id=@article_id",
+            var result = _context.Database.ExecuteSqlRaw("UPDATE operations SET debit=@debit credit=@credit create_date=@create_date WHERE id=@article_id",
                     articleId, debit, credit, createDate);
             
             return Check(result);
@@ -59,7 +65,7 @@ namespace HomeBudgetAutomation.Repositories
 
         private bool Check(int executedRows)
         {
-            return executedRows >= 0 ? true : false;
+            return executedRows > 0 ? true : false;
         }
     }
 }

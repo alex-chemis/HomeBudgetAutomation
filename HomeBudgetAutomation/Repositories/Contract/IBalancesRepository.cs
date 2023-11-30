@@ -4,9 +4,9 @@ namespace HomeBudgetAutomation.Repositories.Contract
 {
     public interface IBalancesRepository
     {
-        ICollection<Operation> GetAll();
+        ICollection<Balance> GetAll();
         Balance Get(int id);
-        bool Form(DateTime date);
-        bool Disband(int id);
+        bool Create(Balance balance);
+        bool SoftDelete(int id);
     }
 }

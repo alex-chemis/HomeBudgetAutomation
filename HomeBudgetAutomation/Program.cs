@@ -4,7 +4,13 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI;
 using Microsoft.EntityFrameworkCore;
+using AutoMapper;
 using HomeBudgetAutomation.Controllers;
+using HomeBudgetAutomation.Repositories.Contract;
+using HomeBudgetAutomation.Repositories;
+using HomeBudgetAutomation.Mapper;
+using HomeBudgetAutomation.Services.Contract;
+using HomeBudgetAutomation.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -25,6 +31,16 @@ builder.Services.AddAuthentication()
 
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
+
+builder.Services.AddAutoMapper(typeof(ApplicationMappingProfile));
+
+builder.Services.AddScoped<IArticlesRepository, ArticlesRepository>();
+builder.Services.AddScoped<IBalancesRepository, BalancesRepository>();
+builder.Services.AddScoped<IOperationsRepository, OperationsRepository>();
+
+builder.Services.AddScoped<IArticlesService, ArticlesService>();
+builder.Services.AddScoped<IBalancesService, BalancesService>();
+builder.Services.AddScoped<IOperationsService, OperationsService>();
 
 var app = builder.Build();
 

@@ -1,11 +1,11 @@
 ﻿CREATE OR REPLACE FUNCTION prevent_update_operation()
 RETURNS TRIGGER AS $$
 BEGIN
-    IF NEW.balance_id IS NOT NULL THEN
+    IF NEW.balance_id IS NOT NULL AND OLD.balance_id IS NOT NULL THEN
         RAISE EXCEPTION 'Cannot update a operation recorded in the balance sheet';
     END IF;
 
-    IF NEW.debit = 0 AND NEW.credit = 0 THEN
+    IF NEW.debit = 0 OR NEW.credit = 0 THEN
         RAISE EXCEPTION 'Cannot create or update a operation with zero debit and credit';
     END IF;
 

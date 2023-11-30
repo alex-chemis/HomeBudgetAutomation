@@ -16,7 +16,14 @@ namespace HomeBudgetAutomation.Repositories
 
         public bool Create(Article article)
         {
-            return Check(_context.Database.ExecuteSqlInterpolated($"INSERT INTO articles (name) VALUES ({article.Name})"));
+            var result = _context.Database.ExecuteSqlInterpolated($"INSERT INTO articles (name) VALUES ({article.Name})");
+
+            if (Check(result))
+            {
+                article.Id = _context.Articles.OrderBy(p => p.Id).Last().Id;
+                return true;
+            }
+            return false;
         }
 
         public bool Delete(int id)
@@ -41,7 +48,7 @@ namespace HomeBudgetAutomation.Repositories
 
         private bool Check(int executedRows)
         {
-            return executedRows >= 0 ? true : false;
+            return executedRows > 0 ? true : false;
         }
     }
 }

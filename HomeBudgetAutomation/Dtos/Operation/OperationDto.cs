@@ -1,9 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace HomeBudgetAutomation.Models
+﻿namespace HomeBudgetAutomation.Dtos.Operation
 {
-    public partial class Operation
+    public class OperationDto
     {
         public int Id { get; set; }
         public int ArticleId { get; set; }
@@ -11,8 +8,5 @@ namespace HomeBudgetAutomation.Models
         public decimal Credit { get; set; }
         public DateTime CreateDate { get; set; }
         public int? BalanceId { get; set; }
-
-        public virtual Article Article { get; set; } = null!;
-        public virtual Balance? Balance { get; set; }
     }
 }
