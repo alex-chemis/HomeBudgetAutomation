@@ -1,5 +1,7 @@
 ﻿using HomeBudgetAutomation.Data;
+using HomeBudgetAutomation.Dtos;
 using HomeBudgetAutomation.Dtos.Article;
+using HomeBudgetAutomation.Dtos.Operation;
 using HomeBudgetAutomation.Models;
 using HomeBudgetAutomation.Repositories.Contract;
 using HomeBudgetAutomation.ServiceResponder;
@@ -15,8 +17,13 @@ namespace HomeBudgetAutomation.Controllers
     public class ArticlesController : ControllerBase
     {
         private readonly IArticlesService _service;
+        private readonly ILogger<ArticlesController> _logger;
 
-        public ArticlesController(IArticlesService service) => _service = service;
+        public ArticlesController(IArticlesService service, ILogger<ArticlesController> logger)
+        {
+            _service = service;
+            _logger = logger;
+        }
 
         [HttpGet]
         [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ArticleDto>))]
@@ -153,6 +160,30 @@ namespace HomeBudgetAutomation.Controllers
             }
 
             return Ok();
+        }
+
+        [HttpPut("percentage")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<ArticlePercentageDto>))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<IEnumerable<ArticlePercentageDto>> Percentage([FromBody] CursorParamsDto cursorParams)
+        {
+            var articles = _service.Percentage(cursorParams);
+
+            if (articles.ErrorMessages is not null)
+            {
+                foreach (var error in articles.ErrorMessages)
+                {
+                    _logger.LogError(error);
+                }
+            }
+
+            if (articles.Message == ServiceMessageType.InternalServerError)
+            {
+                ModelState.AddModelError("", $"Something went wrong in the service layer when getting all articles");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok(articles.Data);
         }
     }
 }

@@ -1,4 +1,6 @@
-﻿using HomeBudgetAutomation.Models;
+﻿using HomeBudgetAutomation.Dtos;
+using HomeBudgetAutomation.Models;
+using System.Collections;
 
 namespace HomeBudgetAutomation.Repositories.Contract
 {
@@ -9,5 +11,6 @@ namespace HomeBudgetAutomation.Repositories.Contract
         ICollection<Operation> GetAll();
         bool Update(Operation operation);
         bool Delete(int id);
+        ICollection<Operation> GetByDate(FunctionParamsDto functionParams);
     }
 }

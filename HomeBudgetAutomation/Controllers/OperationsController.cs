@@ -1,4 +1,5 @@
-﻿using HomeBudgetAutomation.Dtos.Operation;
+﻿using HomeBudgetAutomation.Dtos;
+using HomeBudgetAutomation.Dtos.Operation;
 using HomeBudgetAutomation.ServiceResponder;
 using HomeBudgetAutomation.Services.Contract;
 using Microsoft.AspNetCore.Http;
@@ -11,9 +12,9 @@ namespace HomeBudgetAutomation.Controllers
     public class OperationsController : ControllerBase
     {
         private readonly IOperationsService _service;
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly ILogger<OperationsController> _logger;
 
-        public OperationsController(IOperationsService service, ILogger<WeatherForecastController> logger)
+        public OperationsController(IOperationsService service, ILogger<OperationsController> logger)
         {
             _service = service;
             _logger = logger;
@@ -168,6 +169,30 @@ namespace HomeBudgetAutomation.Controllers
             }
 
             return Ok();
+        }
+
+        [HttpPut("stats")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(List<OperationDto>))]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public ActionResult<IEnumerable<OperationDto>> GetByDate([FromBody] FunctionParamsDto functionParams)
+        {
+            var operations = _service.GetByDate(functionParams);
+
+            if (operations.ErrorMessages is not null)
+            {
+                foreach (var error in operations.ErrorMessages)
+                {
+                    _logger.LogError(error);
+                }
+            }
+
+            if (operations.Message == ServiceMessageType.InternalServerError)
+            {
+                ModelState.AddModelError("", $"Something went wrong in the service layer when getting all operations");
+                return StatusCode(500, ModelState);
+            }
+
+            return Ok(operations.Data);
         }
     }
 }

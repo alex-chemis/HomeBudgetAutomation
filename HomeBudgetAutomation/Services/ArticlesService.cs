@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using HomeBudgetAutomation.Dtos;
 using HomeBudgetAutomation.Dtos.Article;
 using HomeBudgetAutomation.Models;
 using HomeBudgetAutomation.Repositories.Contract;
@@ -124,6 +125,30 @@ namespace HomeBudgetAutomation.Services
                 }
 
                 response.Data = _mapper.Map<ArticleDto>(updatedArticle);
+                response.Message = ServiceMessageType.Ok;
+            }
+            catch (Exception ex)
+            {
+                response.Data = null;
+                response.Message = ServiceMessageType.InternalServerError;
+                response.ErrorMessages = new List<string>() { Convert.ToString(ex.Message) };
+            }
+            return response;
+        }
+
+        public ServiceResponse<List<ArticlePercentageDto>> Percentage(CursorParamsDto cursorParams)
+        {
+            ServiceResponse<List<ArticlePercentageDto>> response = new();
+            try
+            {
+                var articles = _repository.Percentage(cursorParams);
+                response.Data = new List<ArticlePercentageDto>();
+
+                foreach (var article in articles)
+                {
+                    response.Data.Add(article);
+                }
+
                 response.Message = ServiceMessageType.Ok;
             }
             catch (Exception ex)

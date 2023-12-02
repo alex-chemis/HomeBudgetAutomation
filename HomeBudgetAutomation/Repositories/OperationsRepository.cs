@@ -1,4 +1,5 @@
 ﻿using HomeBudgetAutomation.Data;
+using HomeBudgetAutomation.Dtos;
 using HomeBudgetAutomation.Models;
 using HomeBudgetAutomation.Repositories.Contract;
 using Microsoft.EntityFrameworkCore;
@@ -61,6 +62,16 @@ namespace HomeBudgetAutomation.Repositories
                     debit, credit, createDate, operationId);
             
             return Check(result);
+        }
+
+        public ICollection<Operation> GetByDate(FunctionParamsDto functionParams)
+        {
+            var result = _context.Operations.FromSqlRaw($"SELECT * FROM operations WHERE create_date > @start_date AND create_date < @end_date AND article_id = ANY(@article_ids)", 
+                new NpgsqlParameter("@start_date", functionParams.StartDate),
+                new NpgsqlParameter("@end_date", functionParams.EndDate),
+                new NpgsqlParameter("@article_ids", functionParams.ArticleIds.ToArray()));
+
+            return result.ToList();
         }
 
         private bool Check(int executedRows)

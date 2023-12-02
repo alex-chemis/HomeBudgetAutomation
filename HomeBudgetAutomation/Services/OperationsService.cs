@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using HomeBudgetAutomation.Dtos;
 using HomeBudgetAutomation.Dtos.Article;
 using HomeBudgetAutomation.Dtos.Operation;
 using HomeBudgetAutomation.Models;
@@ -125,6 +126,30 @@ namespace HomeBudgetAutomation.Services
                 }
 
                 response.Data = _mapper.Map<OperationDto>(updatedOperation);
+                response.Message = ServiceMessageType.Ok;
+            }
+            catch (Exception ex)
+            {
+                response.Data = null;
+                response.Message = ServiceMessageType.InternalServerError;
+                response.ErrorMessages = new List<string>() { Convert.ToString(ex.Message) };
+            }
+            return response;
+        }
+
+        public ServiceResponse<List<OperationDto>> GetByDate(FunctionParamsDto functionParams)
+        {
+            ServiceResponse<List<OperationDto>> response = new();
+            try
+            {
+                var operations = _repository.GetByDate(functionParams);
+                response.Data = new List<OperationDto>();
+
+                foreach (var operation in operations)
+                {
+                    response.Data.Add(_mapper.Map<OperationDto>(operation));
+                }
+
                 response.Message = ServiceMessageType.Ok;
             }
             catch (Exception ex)

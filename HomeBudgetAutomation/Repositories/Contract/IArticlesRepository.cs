@@ -1,4 +1,5 @@
-﻿using HomeBudgetAutomation.Models;
+﻿using HomeBudgetAutomation.Dtos;
+using HomeBudgetAutomation.Models;
 
 namespace HomeBudgetAutomation.Repositories.Contract
 {
@@ -9,5 +10,6 @@ namespace HomeBudgetAutomation.Repositories.Contract
         ICollection<Article> GetAll();
         bool Update(Article article);
         bool Delete(int id);
+        ICollection<ArticlePercentageDto> Percentage(CursorParamsDto cursorParams);
     }
 }

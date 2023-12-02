@@ -1,4 +1,5 @@
-﻿using HomeBudgetAutomation.Dtos.Operation;
+﻿using HomeBudgetAutomation.Dtos;
+using HomeBudgetAutomation.Dtos.Operation;
 using HomeBudgetAutomation.ServiceResponder;
 
 namespace HomeBudgetAutomation.Services.Contract
@@ -10,5 +11,6 @@ namespace HomeBudgetAutomation.Services.Contract
         ServiceResponse<List<OperationDto>> GetAll();
         ServiceResponse<OperationDto> Update(int id, UpdateOperationDto operation);
         ServiceResponse<string> DeleteById(int id);
+        ServiceResponse<List<OperationDto>> GetByDate(FunctionParamsDto functionParams);
     }
 }

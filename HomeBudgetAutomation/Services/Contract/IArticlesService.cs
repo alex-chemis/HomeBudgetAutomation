@@ -1,4 +1,5 @@
-﻿using HomeBudgetAutomation.Dtos.Article;
+﻿using HomeBudgetAutomation.Dtos;
+using HomeBudgetAutomation.Dtos.Article;
 using HomeBudgetAutomation.ServiceResponder;
 
 namespace HomeBudgetAutomation.Services.Contract
@@ -10,5 +11,6 @@ namespace HomeBudgetAutomation.Services.Contract
         ServiceResponse<List<ArticleDto>> GetAll();
         ServiceResponse<ArticleDto> Update(int id, UpdateArticleDto article);
         ServiceResponse<string> DeleteById(int id);
+        ServiceResponse<List<ArticlePercentageDto>> Percentage(CursorParamsDto cursorParams);
     }
 }

@@ -5,6 +5,7 @@ import { ArticleDirectory } from './components/ArticleDirectory';
 import { Home } from "./components/Home";
 import Ops from './components/OperationDirectory';
 import { BalanceSheet } from './components/BalanceSheet';
+import { Report } from './components/Report';
 
 const AppRoutes = [
   {
@@ -34,6 +35,11 @@ const AppRoutes = [
     path: '/balance-sheet',
     requireAuth: true,
     element: <BalanceSheet />
+  },
+  {
+    path: '/report',
+    requireAuth: true,
+    element: <Report />
   },
   ...ApiAuthorzationRoutes
 ];

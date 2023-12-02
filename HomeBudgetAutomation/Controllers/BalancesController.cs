@@ -11,9 +11,9 @@ namespace HomeBudgetAutomation.Controllers
     public class BalancesController : ControllerBase
     {
         private readonly IBalancesService _service;
-        private readonly ILogger<WeatherForecastController> _logger;
+        private readonly ILogger<BalancesController> _logger;
 
-        public BalancesController(IBalancesService service, ILogger<WeatherForecastController> logger)
+        public BalancesController(IBalancesService service, ILogger<BalancesController> logger)
         {
             _service = service;
             _logger = logger;
