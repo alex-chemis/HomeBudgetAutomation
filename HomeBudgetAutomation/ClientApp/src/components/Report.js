@@ -1,16 +1,67 @@
 import React, { Component } from 'react';
 import { ButtonGroup, Button, Alert } from 'reactstrap';
 import authService from './api-authorization/AuthorizeService'
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer } from 'recharts';
 
 const URL = 'api/balances'
+
+const data1 = [
+  {
+    name: 'Page A',
+    uv: 4000,
+    pv: 2400,
+    amt: 2400,
+  },
+  {
+    name: 'Page B',
+    uv: 3000,
+    pv: 1398,
+    amt: 2210,
+  },
+  {
+    name: 'Page C',
+    uv: 2000,
+    pv: 9800,
+    amt: 2290,
+  },
+  {
+    name: 'Page D',
+    uv: 2780,
+    pv: 3908,
+    amt: 2000,
+  },
+  {
+    name: 'Page E',
+    uv: 1890,
+    pv: 4800,
+    amt: 2181,
+  },
+  {
+    name: 'Page F',
+    uv: 2390,
+    pv: 3800,
+    amt: 2500,
+  },
+  {
+    name: 'Page G',
+    uv: 3490,
+    pv: 4300,
+    amt: 2100,
+  },
+];
 
 export class Report extends Component {
   static displayName = Report.name;
 
   constructor(props) {
     super(props);
-    this.state = { operations: [], articles: [], loading: true, error: false, errorMessage: "sdfds" };
+    this.state = { operations: [], articles: [], balances: [], loading: true, error: false, errorMessage: "sdfds" };
   }
+
+  componentDidMount() {
+    this.getAllBalance();
+  }
+
 
   renderInputOpTable() {
     return (
@@ -137,6 +188,32 @@ export class Report extends Component {
     );
   }
 
+  renderGraph() {
+    return (
+        <LineChart
+          width={500}
+          height={300}
+          data={this.state.balances.map(balance => ({
+            date: balance.createDate,
+            amount: balance.amount
+          }))}
+          margin={{
+            top: 5,
+            right: 30,
+            left: 20,
+            bottom: 5,
+          }}
+        >
+          <CartesianGrid strokeDasharray="3 3" />
+          <XAxis dataKey="date" />
+          <YAxis />
+          <Tooltip />
+          <Legend />
+          <Line type="monotone" dataKey="amount" stroke="#8884d8" activeDot={{ r: 8 }} />
+        </LineChart>
+    );
+  }
+
   render() {
     let error = this.state.error
       ?
@@ -157,6 +234,8 @@ export class Report extends Component {
         <p>Здесь представлен процент от дохода/расхода/прибыли по заданным статьям</p>
         {this.renderInputPrTable()}
         {this.renderPrTable()}
+        <p>Здесь представлен график чисто прибыли баланса</p>
+        {this.renderGraph()}
       </div>
     );
   }
@@ -252,5 +331,14 @@ export class Report extends Component {
     } catch {
       this.setState({error: true, errorMessage: "Некорректно задан массив"})
     }
+  }
+
+  async getAllBalance() {
+    const token = await authService.getAccessToken();
+    const response = await fetch(URL, {
+      headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+    });
+    const data = await response.json();
+    this.setState({ balances: data, loading: false, error: false });
   }
 }
