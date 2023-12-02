@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 import { useParams } from 'react-router-dom';
 import { ButtonGroup, Button, Alert } from 'reactstrap';
-import { Link } from 'react-router-dom';
 import authService from './api-authorization/AuthorizeService'
+
 
 const URL = 'api/operations'
 
@@ -121,12 +121,12 @@ export class OperationDirectory extends Component {
       createDate: new Date(document.querySelector("#createDate").value)
     }
 
-    if (isNaN(operation.debit) || operation.debit == 0) {
+    if (isNaN(operation.debit) || operation.debit === 0) {
       this.setState({error: true, errorMessage: "Доход задан некорректно!"})
       return
     }
 
-    if (isNaN(operation.debit) == NaN || operation.debit == 0) {
+    if (isNaN(operation.debit) || operation.debit === 0) {
       this.setState({error: true, errorMessage: "Расход задан некорректно!"})
       return
     }
@@ -155,7 +155,7 @@ export class OperationDirectory extends Component {
       headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
     });
     const data = await response.json();
-    this.setState({ operations: data.filter(x => x.articleId == this.props.articleId), loading: false, error: false });
+    this.setState({ operations: data.filter(x => x.articleId === +this.props.articleId), loading: false, error: false });
   }
 
   async updateById(id) {
@@ -175,12 +175,12 @@ export class OperationDirectory extends Component {
       createDate: new Date(document.querySelector("#createDate").value)
     }
 
-    if (isNaN(operation.debit) || operation.debit == 0) {
+    if (isNaN(operation.debit) || operation.debit === 0) {
       this.setState({error: true, errorMessage: "Доход задан некорректно!"})
       return
     }
 
-    if (isNaN(operation.debit) == NaN || operation.debit == 0) {
+    if (isNaN(operation.debit) || operation.debit === 0) {
       this.setState({error: true, errorMessage: "Расход задан некорректно!"})
       return
     }

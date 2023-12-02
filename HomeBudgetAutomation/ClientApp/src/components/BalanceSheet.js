@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
-import { Nav, NavItem, NavLink, ButtonGroup, Button, Alert } from 'reactstrap';
-import { Link } from 'react-router-dom';
+import { ButtonGroup, Button, Alert } from 'reactstrap';
 import authService from './api-authorization/AuthorizeService'
 
 const URL = 'api/balances'
@@ -34,7 +33,7 @@ export class BalanceSheet extends Component {
           <tr>
             <td></td>
             <td style={{textAlign: 'left'}}>
-              <input id='name' type="text" />
+              <input id='createDate' type="text" />
             </td>
             <td></td>
             <td></td>
@@ -46,10 +45,10 @@ export class BalanceSheet extends Component {
           {this.state.balances.map(balance =>
             <tr key={balance.id}>
               <td>{balance.id}</td>
-              <td>{balance.name}</td>
-              <td></td>
-              <td></td>
-              <td></td>
+              <td>{balance.createDate}</td>
+              <td>{balance.debit}</td>
+              <td>{balance.credit}</td>
+              <td>{balance.amount}</td>
               <td style={{textAlign: 'right'}}>
                 <ButtonGroup aria-label="Basic example">
                   <Button color="danger" onClick={() => this.deleteById(balance.id)}>Расформировать</Button>
@@ -80,8 +79,8 @@ export class BalanceSheet extends Component {
 
     return (
       <div>
-        <h1 id="tabelLabel" >Справочник статей расхода</h1>
-        <p>Здесь представлена таблица статей расхода, вы можете их создавать, удалять и редактировать</p>
+        <h1 id="tabelLabel" >Журнал баланса</h1>
+        <p>Здесь представлена таблица баланса, вы можете сформировать и расформировать баланс</p>
         {error}
         {contents}
       </div>
@@ -99,24 +98,30 @@ export class BalanceSheet extends Component {
     }
 
     const balance = {
-      name: document.querySelector('#name').value
+      createDate: new Date(document.querySelector("#createDate").value)
     }
 
-    if (balance.name.trim() == "") {
-      this.setState({error: true, errorMessage: "Пустое имя недопустимо!"})
+    if (isNaN(balance.createDate)) {
+      this.setState({error: true, errorMessage: "Дата задана некорректно!"})
       return
     }
     
-    const response = await fetch(URL, {
-      method: 'POST',
-      headers: headers,
-      body: JSON.stringify(balance)
-    });
-    
-    if (response.ok) {
-      const data = await response.json()
-      this.state.balances.push(data)
-      this.setState({balances: this.state.balances, loading: false, error: false})
+    try {
+      const response = await fetch(URL, {
+        method: 'POST',
+        headers: headers,
+        body: JSON.stringify(balance)
+      });
+      
+      if (response.ok) {
+        const data = await response.json()
+        this.state.balances.push(data)
+        this.setState({balances: this.state.balances, loading: false, error: false})
+      } else {
+        throw new Error()
+      }
+    } catch {
+      this.setState({error: true, errorMessage: "Не удалось создать баланс. Нет открытых операций за данный период"})
     }
   }
 
@@ -131,20 +136,13 @@ export class BalanceSheet extends Component {
 
   async deleteById(id) {
     const token = await authService.getAccessToken();
-    try {
-      const response = await fetch(URL + `/${id}`, {
-        method: 'DELETE',
-        headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-      });
-      if (response.ok) {
-        const list = this.state.balances.filter(x => x.id !== id)
-        this.setState({ balances: list, loading: false, error: false })
-      } else {
-        throw new Error()
-      }
-    } catch {
-      this.setState({error: true, errorMessage: "Статья содержит закрытые операции!"})
+    const response = await fetch(URL + `/${id}`, {
+      method: 'DELETE',
+      headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+    });
+    if (response.ok) {
+      const list = this.state.balances.filter(x => x.id !== id)
+      this.setState({ balances: list, loading: false, error: false })
     }
-    
   }
 }

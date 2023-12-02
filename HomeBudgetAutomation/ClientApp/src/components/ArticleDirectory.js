@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Nav, NavItem, NavLink, ButtonGroup, Button, Alert } from 'reactstrap';
+import { ButtonGroup, Button, Alert } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import authService from './api-authorization/AuthorizeService'
 
@@ -95,7 +95,7 @@ export class ArticleDirectory extends Component {
       name: document.querySelector('#name').value
     }
 
-    if (article.name.trim() == "") {
+    if (article.name.trim() === "") {
       this.setState({error: true, errorMessage: "Пустое имя недопустимо!"})
       return
     }
@@ -136,7 +136,7 @@ export class ArticleDirectory extends Component {
       name: document.querySelector('#name').value
     }
 
-    if (article.name.trim() == "") {
+    if (article.name.trim() === "") {
       this.setState({error: true, errorMessage: "Пустое имя недопустимо!"})
       return
     }
