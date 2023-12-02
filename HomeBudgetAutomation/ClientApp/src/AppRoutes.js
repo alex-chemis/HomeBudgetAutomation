@@ -1,8 +1,10 @@
 import ApiAuthorzationRoutes from './components/api-authorization/ApiAuthorizationRoutes';
 import { Counter } from "./components/Counter";
 import { FetchData } from "./components/FetchData";
-import { ArticleJournal } from './components/ArticleJournal';
+import { ArticleDirectory } from './components/ArticleDirectory';
 import { Home } from "./components/Home";
+import Ops from './components/OperationDirectory';
+import { BalanceSheet } from './components/BalanceSheet';
 
 const AppRoutes = [
   {
@@ -19,9 +21,19 @@ const AppRoutes = [
     element: <FetchData />
   },
   {
-    path: '/article-journal',
+    path: '/article-directory',
     requireAuth: true,
-    element: <ArticleJournal />
+    element: <ArticleDirectory />
+  },
+  {
+    path: '/operation-directory/:id',
+    requireAuth: true,
+    element: <Ops />
+  },
+  {
+    path: '/balance-sheet',
+    requireAuth: true,
+    element: <BalanceSheet />
   },
   ...ApiAuthorzationRoutes
 ];

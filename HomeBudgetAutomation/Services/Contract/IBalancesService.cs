@@ -6,7 +6,7 @@ namespace HomeBudgetAutomation.Services.Contract
 {
     public interface IBalancesService
     {
-        ServiceResponse<BalanceDto> Form(DateTime formDate);
+        ServiceResponse<BalanceDto> Form(FormBalanceDto balance);
         ServiceResponse<BalanceDto> GetById(int id);
         ServiceResponse<List<BalanceDto>> GetAll();
         ServiceResponse<string> SoftDelete(int id);

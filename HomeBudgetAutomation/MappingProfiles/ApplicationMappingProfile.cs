@@ -11,6 +11,7 @@ namespace HomeBudgetAutomation.Mapper
             CreateMap<Models.Article, Dtos.Article.UpdateArticleDto>().ReverseMap();
 
             CreateMap<Models.Balance, Dtos.Balance.BalanceDto>().ReverseMap();
+            CreateMap<Models.Balance, Dtos.Balance.FormBalanceDto>().ReverseMap();
 
             CreateMap<Models.Operation, Dtos.Operation.OperationDto>().ReverseMap();
             CreateMap<Models.Operation, Dtos.Operation.CreateOperationDto>().ReverseMap();

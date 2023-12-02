@@ -28,7 +28,7 @@ namespace HomeBudgetAutomation.Repositories
 
             if (Check(result))
             {
-                operation.Id = _context.Operations.Last().Id;
+                operation.Id = _context.Operations.OrderBy(p => p.Id).Last().Id;
                 return true;
             }
 
@@ -52,13 +52,13 @@ namespace HomeBudgetAutomation.Repositories
 
         public bool Update(Operation operation)
         {
-            var articleId = new NpgsqlParameter("@article_id", operation.ArticleId);
+            var operationId = new NpgsqlParameter("@operation_id", operation.Id);
             var debit = new NpgsqlParameter("@debit", operation.Debit);
             var credit = new NpgsqlParameter("@credit", operation.Credit);
             var createDate = new NpgsqlParameter("@create_date", operation.CreateDate);
 
-            var result = _context.Database.ExecuteSqlRaw("UPDATE operations SET debit=@debit credit=@credit create_date=@create_date WHERE id=@article_id",
-                    articleId, debit, credit, createDate);
+            var result = _context.Database.ExecuteSqlRaw("UPDATE operations SET debit=@debit, credit=@credit, create_date=@create_date WHERE id=@operation_id",
+                    debit, credit, createDate, operationId);
             
             return Check(result);
         }

@@ -1,13 +1,12 @@
 import React, { Component } from 'react';
-import { NavItem, NavLink, ButtonGroup, Button, Alert } from 'reactstrap';
+import { Nav, NavItem, NavLink, ButtonGroup, Button, Alert } from 'reactstrap';
 import { Link } from 'react-router-dom';
 import authService from './api-authorization/AuthorizeService'
 
 const URL = 'api/articles'
 
-export class ArticleJournal extends Component {
-  static displayName = ArticleJournal.name;
-  ;
+export class ArticleDirectory extends Component {
+  static displayName = ArticleDirectory.name;
 
   constructor(props) {
     super(props);
@@ -35,7 +34,7 @@ export class ArticleJournal extends Component {
               <input id='name' type="text" />
             </td>
             <td style={{textAlign: 'right'}}>
-              <button className="btn btn-primary btn-block" onClick={() => this.post()}>Добавить статью</button>
+              <button className="btn btn-primary btn-block" onClick={() => this.post()}>Добавить</button>
             </td>
           </tr>
           {this.state.articles.map(article =>
@@ -44,7 +43,7 @@ export class ArticleJournal extends Component {
               <td>{article.name}</td>
               <td style={{textAlign: 'right'}}>
                 <ButtonGroup aria-label="Basic example">
-                  <Button color="info">Операции</Button>
+                  <Button color="info" tag={Link} to={`/operation-directory/${article.id}`}>Операции</Button>
                   <Button color="warning" onClick={() => this.updateById(article.id)}>Обновить</Button>
                   <Button color="danger" onClick={() => this.deleteById(article.id)}>Удалить</Button>
                 </ButtonGroup>
@@ -74,7 +73,7 @@ export class ArticleJournal extends Component {
 
     return (
       <div>
-        <h1 id="tabelLabel" >Журнал статей расхода</h1>
+        <h1 id="tabelLabel" >Справочник статей расхода</h1>
         <p>Здесь представлена таблица статей расхода, вы можете их создавать, удалять и редактировать</p>
         {error}
         {contents}
@@ -137,6 +136,11 @@ export class ArticleJournal extends Component {
       name: document.querySelector('#name').value
     }
 
+    if (article.name.trim() == "") {
+      this.setState({error: true, errorMessage: "Пустое имя недопустимо!"})
+      return
+    }
+
     const response = await fetch(URL + `/${id}`, {
       method: 'PATCH',
       headers: headers,
@@ -152,13 +156,20 @@ export class ArticleJournal extends Component {
 
   async deleteById(id) {
     const token = await authService.getAccessToken();
-    const response = await fetch(URL + `/${id}`, {
-      method: 'DELETE',
-      headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
-    });
-    if (response.ok) {
-      const list = this.state.articles.filter(x => x.id !== id)
-      this.setState({ articles: list, loading: false, error: false })
+    try {
+      const response = await fetch(URL + `/${id}`, {
+        method: 'DELETE',
+        headers: !token ? {} : { 'Authorization': `Bearer ${token}` }
+      });
+      if (response.ok) {
+        const list = this.state.articles.filter(x => x.id !== id)
+        this.setState({ articles: list, loading: false, error: false })
+      } else {
+        throw new Error()
+      }
+    } catch {
+      this.setState({error: true, errorMessage: "Статья содержит закрытые операции!"})
     }
+    
   }
 }

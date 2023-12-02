@@ -24,7 +24,8 @@ namespace HomeBudgetAutomation.Repositories
             {
                 try
                 {
-                    _context.Database.ExecuteSqlInterpolated($"UPDATE operations SET balance_id = {DBNull.Value} WHERE balance_id = {id}");
+                    _context.Database.ExecuteSqlInterpolated($"UPDATE operations SET balance_id = {null} WHERE balance_id = {id}");
+                    _context.Operations.OrderBy(p => p.Id);
                     var result = _context.Database.ExecuteSqlInterpolated($"DELETE FROM balance WHERE id = {id} ");
                     
                     if (Check(result))
@@ -65,14 +66,14 @@ namespace HomeBudgetAutomation.Repositories
 
                     if (Check(result))
                     {
-                        transaction.Commit();
-
-                        var last = _context.Balances.Last();
+                        var last = _context.Balances.OrderBy(p => p.Id).Last();
                         balance.Id = last.Id;
                         balance.Debit = last.Debit;
                         balance.Credit = last.Credit;
                         balance.Amount = last.Amount;
                         balance.CreateDate = last.CreateDate;
+
+                        transaction.Commit();
 
                         return true;
                     }
@@ -90,12 +91,12 @@ namespace HomeBudgetAutomation.Repositories
 
         public Balance Get(int id)
         {
-            return _context.Balances.FromSqlInterpolated($"SELECT * FROM balances WHERE id = {id}").ToList().First();
+            return _context.Balances.FromSqlInterpolated($"SELECT * FROM balance WHERE id = {id}").ToList().First();
         }
 
         public ICollection<Balance> GetAll()
         {
-            return _context.Balances.FromSqlInterpolated($"SELECT * FROM balances").ToList();
+            return _context.Balances.FromSqlInterpolated($"SELECT * FROM balance").ToList();
         }
         private bool Check(int executedRows)
         {

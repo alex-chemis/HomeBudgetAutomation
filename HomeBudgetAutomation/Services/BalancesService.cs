@@ -43,12 +43,12 @@ namespace HomeBudgetAutomation.Services
             return response;
         }
 
-        public ServiceResponse<BalanceDto> Form(DateTime formDate)
+        public ServiceResponse<BalanceDto> Form(FormBalanceDto balance)
         {
             ServiceResponse<BalanceDto> response = new();
             try
             {
-                var newBalance = new Balance() { CreateDate = formDate };
+                var newBalance = _mapper.Map<Balance>(balance);
 
                 if (!_repository.Create(newBalance))
                 {

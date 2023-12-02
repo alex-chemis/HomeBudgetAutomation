@@ -12,6 +12,6 @@ $$ LANGUAGE plpgsql;
 DROP TRIGGER IF EXISTS check_delete_operation ON operations;
 
 CREATE TRIGGER check_delete_operation
-BEFORE UPDATE ON operations
+BEFORE DELETE ON operations
 FOR EACH ROW
 EXECUTE FUNCTION prevent_delete_operation();
